@@ -1,12 +1,11 @@
 import os
-from google import genai
 from google.genai import types
 
 def write_file(working_directory, file_path, content):
     working_abspath = os.path.abspath(working_directory)
     target_path = os.path.abspath(os.path.join(working_directory, file_path))
 
-    if working_abspath not in target_path:
+    if not target_path.startswith(working_abspath):
         return f'Error: Cannot write to "{file_path}" as it is outside the permitted working directory'
         
     if not os.path.isfile(target_path):

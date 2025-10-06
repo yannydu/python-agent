@@ -5,7 +5,7 @@ from google import genai
 from google.genai import types
 
 from prompts import system_prompt
-from call_function import available_functions
+from call_function import *
 
 load_dotenv()
 api_key = os.environ.get("GEMINI_API_KEY")
@@ -50,12 +50,19 @@ def generate_content(client, messages, verbose):
         print(f"Prompt tokens: {response.usage_metadata.prompt_token_count}")
         print(f"Response tokens: {response.usage_metadata.candidates_token_count}")
 
+
     if not response.function_calls:
         return response.text
     
     for function_call_part in response.function_calls:
-        print(f"Calling function: {function_call_part.name}({function_call_part.args})")
+        function_call_result = call_function(function_call_part, verbose)
 
+        if not function_call_result.parts[0].function_response.response:
+            raise RuntimeError("Did not recieve a response from functions.")
+
+        if verbose:
+            print(f"-> {function_call_result.parts[0].function_response.response}")
+        
 
 if __name__ == "__main__":
     main()
