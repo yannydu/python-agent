@@ -3,6 +3,7 @@ from functions.get_files_info import *
 from functions.get_file_content import *
 from functions.run_python import *
 from functions.write_file_content import *
+from config import WORKING_DIR
 
 # Available functions to the agent
 available_functions = types.Tool(
@@ -23,7 +24,6 @@ function_dictionary = {
 
 
 def call_function(function_call_part, verbose=False):
-
     if verbose:
         print(f"Calling function: {function_call_part.name}({function_call_part.args})")
     else:
@@ -44,7 +44,7 @@ def call_function(function_call_part, verbose=False):
 
     fn = function_dictionary[function_name]
     args = dict(function_call_part.args or {})
-    function_result = fn(**args, working_directory="./calculator/")
+    function_result = fn(**args, working_directory=WORKING_DIR)
 
     return types.Content(
         role="tool",
